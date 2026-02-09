@@ -5,6 +5,10 @@ public class NewMonoBehaviourScript : MonoBehaviour
     public float speed = 10.0f;
     public float rotSpeed = 80.0f;
     public float boostSpeed = 10.0f;
+    public float acceleration = 10.0f;
+    float currentSpeed = 0;
+    public float maxSpeed = 20.0f;
+    public float deceleration = 5.0f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -14,8 +18,9 @@ public class NewMonoBehaviourScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MoveVehicle();
-        AddBoost() ;
+        MoveWithAcceleration();
+        //MoveVehicle();
+        //AddBoost();
 
     }
 
@@ -48,5 +53,57 @@ public class NewMonoBehaviourScript : MonoBehaviour
         {
             speed -= boostSpeed;
         }
+    }
+
+    void MoveWithAcceleration()
+    {
+        // Get input from keyboard(forward/backward)
+        float forwardInput = Input.GetAxis("Vertical");
+        currentSpeed += acceleration * forwardInput * Time.deltaTime;
+
+        if (currentSpeed > maxSpeed)
+
+        {
+
+            currentSpeed = maxSpeed;
+
+        }
+
+        if (currentSpeed < -maxSpeed)
+
+        {
+
+            currentSpeed = -maxSpeed;
+
+        }
+        if (forwardInput == 0)
+
+        {
+            if (currentSpeed > 0)
+
+            {
+
+                currentSpeed -= deceleration * Time.deltaTime;
+
+            }
+            if (currentSpeed < 0)
+
+            {
+
+                currentSpeed += deceleration * Time.deltaTime;
+
+            }
+        }
+
+        // Get input from keyboard(horizontal)
+        float horizontalInput = Input.GetAxis("Horizontal");
+        horizontalInput *= rotSpeed;
+        horizontalInput *= Time.deltaTime;
+
+
+        //Moving & Rotating the spaceship
+        //this.transform.Translate(Vector3.forward);
+        this.transform.Translate(Vector3.forward * Time.deltaTime * currentSpeed);
+        this.transform.Rotate(0, horizontalInput, 0);
     }
 }
