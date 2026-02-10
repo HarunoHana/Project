@@ -55,33 +55,26 @@ public class Drive : MonoBehaviour
         // Get user input to drive car forward/backward
         float forwardInput = Input.GetAxisRaw("Vertical");
 
-        //Add acceleration if player is applying gas
-        currentSpeed += acceleration * forwardInput * Time.deltaTime;
 
-        //Clamp the speed to maxSpeed
-        if (currentSpeed > maxSpeed)
+
+        //Add acceleration if player is applying gas
+
+        if (currentSpeed < maxSpeed && currentSpeed > -maxSpeed)
         {
-            currentSpeed = maxSpeed;
+            currentSpeed += acceleration * forwardInput * Time.deltaTime;
         }
-        if (currentSpeed < -maxSpeed)
+        else
         {
-            currentSpeed = -maxSpeed;
+            Decelerate();
         }
+    
+            
+  
 
         //Reduce the current speed if player is not applying gas
         if (forwardInput == 0)
         {
-            if (currentSpeed > 0)
-            {
-                currentSpeed -= acceleration * Time.deltaTime;
-            }
-                if (currentSpeed < 0)
-
-                {
-                    currentSpeed += deceleration * Time.deltaTime;
-            }
-           
-         
+            Decelerate();
         }    
 
             //Move the car forward based on current speed
@@ -92,5 +85,17 @@ public class Drive : MonoBehaviour
         rotateInput *= Time.deltaTime;
         rotateInput *= rotateSpeed;
         transform.Rotate(0, rotateInput, 0);
+    }
+    void Decelerate()
+    {
+        if (currentSpeed > 0)
+        {
+            currentSpeed -= acceleration * Time.deltaTime;
+        }
+        if (currentSpeed < 0)
+
+        {
+            currentSpeed += deceleration * Time.deltaTime;
+        }
     }
 }
